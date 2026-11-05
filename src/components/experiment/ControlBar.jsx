@@ -5,9 +5,9 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Sparkles,
   Zap,
   Info,
+  Sliders,
 } from 'lucide-react';
 
 export function ControlBar({
@@ -29,67 +29,67 @@ export function ControlBar({
   const isAtEnd = currentStep === totalSteps;
 
   return (
-    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
-      {/* Progress & Step Info */}
+    <div className="p-3.5 sm:p-4 rounded-xl border theme-border theme-surface shadow-subtle flex flex-wrap items-center justify-between gap-3">
+      {/* Step Tracker & Scrubber */}
       <div className="flex items-center gap-3">
+        <button
+          onClick={onReset}
+          className="p-1.5 rounded-lg border theme-border theme-surface-subtle hover:theme-border-strong theme-text-secondary transition-colors"
+          title="Reset to Step 0"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+        </button>
+
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Simulation Progress:</span>
-            <span className="text-sm font-bold text-white font-mono">
+            <span className="text-[11px] theme-text-muted font-medium">Trajectory:</span>
+            <span className="text-xs font-bold theme-text-primary font-mono">
               Step {currentStep} of {totalSteps}
             </span>
           </div>
-          {/* Progress bar */}
-          <div className="w-36 sm:w-48 h-2 bg-slate-800 rounded-full overflow-hidden mt-1.5 border border-slate-700/60">
+          {/* Progress track */}
+          <div className="w-28 sm:w-40 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300"
+              className="h-full bg-blue-600 transition-all duration-200"
               style={{ width: `${(currentStep / Math.max(1, totalSteps)) * 100}%` }}
             />
           </div>
         </div>
-
-        <button
-          onClick={onReset}
-          className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors border border-slate-700/80"
-          title="Reset to initial state (Step 0)"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </button>
       </div>
 
-      {/* Main Playback Controls */}
-      <div className="flex items-center gap-2">
+      {/* Primary Playback Button Group */}
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onPrev}
           disabled={isAtStart}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
             isAtStart
-              ? 'bg-slate-900 text-slate-600 border-slate-800 cursor-not-allowed'
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 active:scale-95'
+              ? 'opacity-40 cursor-not-allowed theme-surface theme-border theme-text-muted'
+              : 'theme-surface theme-border hover:theme-surface-subtle theme-text-primary active:scale-95'
           }`}
-          title="Go back to previous example"
+          title="Previous Example"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
+          <ChevronLeft className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Prev</span>
         </button>
 
         <button
           onClick={onTogglePlay}
-          className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 ${
+          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 ${
             isPlaying
-              ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-amber-500/20'
-              : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-500/25'
+              ? 'bg-amber-600 hover:bg-amber-700 text-white'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
-          title={isPlaying ? 'Pause autoplay' : 'Start autoplay through examples'}
+          title={isPlaying ? 'Pause simulation' : 'Autoplay through dataset'}
         >
           {isPlaying ? (
             <>
-              <Pause className="w-4 h-4 fill-white" />
+              <Pause className="w-3.5 h-3.5 fill-white" />
               <span>Pause</span>
             </>
           ) : (
             <>
-              <Play className="w-4 h-4 fill-white" />
+              <Play className="w-3.5 h-3.5 fill-white" />
               <span>Autoplay</span>
             </>
           )}
@@ -98,27 +98,27 @@ export function ControlBar({
         <button
           onClick={onNext}
           disabled={isAtEnd}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
             isAtEnd
-              ? 'bg-slate-900 text-slate-600 border-slate-800 cursor-not-allowed'
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 active:scale-95'
+              ? 'opacity-40 cursor-not-allowed theme-surface theme-border theme-text-muted'
+              : 'theme-surface theme-border hover:theme-surface-subtle theme-text-primary active:scale-95'
           }`}
-          title="Process next training example"
+          title="Next Example"
         >
           <span className="hidden sm:inline">Next</span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
 
-        {/* Speed Selector */}
-        <div className="flex items-center rounded-xl bg-slate-950 border border-slate-800 p-0.5 text-[11px] font-mono">
+        {/* Speed toggle */}
+        <div className="flex items-center rounded-lg border theme-border theme-surface-subtle p-0.5 text-[11px] font-mono ml-1">
           {[1, 1.5, 2].map((spd) => (
             <button
               key={spd}
               onClick={() => onChangeSpeed(spd)}
-              className={`px-2 py-1 rounded-lg transition-colors ${
+              className={`px-1.5 py-0.5 rounded transition-colors ${
                 playbackSpeed === spd
-                  ? 'bg-indigo-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white font-bold'
+                  : 'theme-text-muted hover:theme-text-primary'
               }`}
             >
               {spd}x
@@ -127,41 +127,29 @@ export function ControlBar({
         </div>
       </div>
 
-      {/* Auxiliary Actions: Toggle Explanation, Jump to Predict, Results */}
-      <div className="flex items-center gap-2">
+      {/* Right Actions: Test Query & Summary */}
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onToggleExplanation}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
             showExplanation
-              ? 'bg-indigo-500/15 text-indigo-300 border-indigo-500/40'
-              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+              ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+              : 'theme-surface border theme-border hover:theme-surface-subtle theme-text-muted'
           }`}
-          title="Toggle Algorithm Explanation Panel"
+          title="Toggle algorithm explanation notes"
         >
-          <Info className="w-4 h-4 text-indigo-400" />
-          <span className="hidden md:inline">
-            {showExplanation ? 'Hide Guide' : 'Show Guide'}
-          </span>
+          <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          <span className="hidden md:inline">{showExplanation ? 'Hide Notes' : 'Show Notes'}</span>
         </button>
 
         <button
           onClick={onOpenPrediction}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition-colors"
-          title="Test an unseen instance on current Version Space"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors"
+          title="Open Prediction Sandbox"
         >
-          <Zap className="w-4 h-4 text-emerald-400" />
-          <span>Predict</span>
+          <Zap className="w-3.5 h-3.5" />
+          <span>Test Query</span>
         </button>
-
-        {isAtEnd && (
-          <button
-            onClick={onOpenResults}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-500/20 transition-all hover:scale-105"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>View Summary</span>
-          </button>
-        )}
       </div>
     </div>
   );

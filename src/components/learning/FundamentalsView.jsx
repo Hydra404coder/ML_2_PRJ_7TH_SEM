@@ -2,12 +2,10 @@ import React from 'react';
 import {
   BookOpen,
   CheckCircle2,
-  HelpCircle,
   Layers,
   ArrowRight,
   PlusCircle,
   MinusCircle,
-  Lightbulb,
 } from 'lucide-react';
 import { HierarchyDiagram } from './HierarchyDiagram.jsx';
 import { GeneralityComparator } from './GeneralityComparator.jsx';
@@ -83,137 +81,125 @@ export function FundamentalsView({ onExploreScenarios }) {
   ];
 
   return (
-    <div className="py-8 max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+    <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-indigo-950/50 via-purple-950/40 to-slate-900 border border-indigo-500/30">
+      <div className="p-6 sm:p-8 rounded-xl border theme-border theme-surface shadow-subtle">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 text-xs font-semibold mb-3">
-            <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Module 1 Theory Guide</span>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 text-xs font-semibold mb-3">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Mitchell Chapter 2 • Concept Learning Notes</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Learn the Fundamentals of Concept Learning
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight theme-text-primary">
+            Theory & Formal Foundations
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 mt-2 leading-relaxed">
-            Discover how machines learn rules from observations using General-to-Specific Ordering, S and G Boundaries, and Candidate Elimination.
+          <p className="text-xs sm:text-sm theme-text-secondary mt-1.5 leading-relaxed">
+            A comprehensive reference guide on General-to-Specific Partial Orders, Dual S & G Boundaries, Version Spaces, and Candidate Elimination.
           </p>
         </div>
       </div>
 
-      {/* The 13 Key Concepts Grid */}
+      {/* 13 Key Concepts Grid */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-white tracking-tight">13 Core Building Blocks</h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Essential definitions in Mitchell's Concept Learning framework
+          <h2 className="text-base sm:text-lg font-bold theme-text-primary">The 13 Theoretical Foundations</h2>
+          <p className="text-xs theme-text-muted mt-0.5">
+            Key formalisms and terminology used throughout this laboratory
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {definitions.map((item) => (
             <div
               key={item.num}
-              className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between"
+              className="p-3.5 rounded-lg theme-surface border theme-border shadow-subtle flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold text-indigo-400">
-                    Concept #{String(item.num).padStart(2, '0')}
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">
+                    Def #{String(item.num).padStart(2, '0')}
                   </span>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-slate-600" />
+                  <CheckCircle2 className="w-3.5 h-3.5 theme-text-muted opacity-40" />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-1.5">{item.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                <h3 className="text-xs font-bold theme-text-primary mb-1">{item.title}</h3>
+                <p className="text-xs theme-text-secondary leading-relaxed">{item.desc}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Visual Hierarchy / Lattice */}
+      {/* Visual Hierarchy */}
       <HierarchyDiagram />
 
-      {/* Positive vs Negative Boundary Mechanism Explanation */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Boundary update mechanics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Positive box */}
-        <div className="p-6 rounded-2xl bg-emerald-950/20 border border-emerald-500/30">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <PlusCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-white">How Positive Examples Update Boundaries</h3>
-              <span className="text-xs font-semibold text-emerald-400">Forces Generalization (S expands ↑)</span>
-            </div>
+        <div className="p-5 rounded-xl border border-emerald-300 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/20">
+          <div className="flex items-center gap-2.5 mb-2.5">
+            <PlusCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="text-xs sm:text-sm font-bold text-emerald-950 dark:text-emerald-200">
+              Positive Instances: Upward Generalization
+            </h3>
           </div>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
-            A positive example represents an instance that the target concept MUST cover.
-          </p>
-          <ul className="space-y-2 text-xs text-slate-300">
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">•</span>
-              <span><strong>Generalize S minimally:</strong> If a hypothesis in S does not cover the positive example, replace its mismatched attributes with wildcards <code className="text-emerald-300 font-mono">"?"</code> so it covers the example.</span>
+          <ul className="space-y-1.5 text-xs theme-text-secondary leading-relaxed">
+            <li className="flex items-start gap-1.5">
+              <span className="text-emerald-600 font-bold">•</span>
+              <span><strong>Generalize S minimally:</strong> If a hypothesis in S fails to cover the positive instance, replace mismatched constraints with wildcards <code className="font-mono font-bold text-emerald-700 dark:text-emerald-300">"?"</code>.</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">•</span>
-              <span><strong>Prune G:</strong> Any hypothesis in G that fails to cover the positive instance is immediately eliminated.</span>
+            <li className="flex items-start gap-1.5">
+              <span className="text-emerald-600 font-bold">•</span>
+              <span><strong>Prune G:</strong> Any hypothesis in G that fails to cover the positive instance is permanently eliminated.</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-400 font-bold">•</span>
-              <span><strong>Eliminates overly specific rules:</strong> Hypotheses below the new S are discarded because they are too restrictive.</span>
+            <li className="flex items-start gap-1.5">
+              <span className="text-emerald-600 font-bold">•</span>
+              <span><strong>Effect:</strong> Discards hypotheses that are overly specific to encompass positive data.</span>
             </li>
           </ul>
         </div>
 
         {/* Negative box */}
-        <div className="p-6 rounded-2xl bg-rose-950/20 border border-rose-500/30">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              <MinusCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-white">How Negative Examples Update Boundaries</h3>
-              <span className="text-xs font-semibold text-rose-400">Forces Specialization (G contracts ↓)</span>
-            </div>
+        <div className="p-5 rounded-xl border border-rose-300 dark:border-rose-900 bg-rose-50/50 dark:bg-rose-950/20">
+          <div className="flex items-center gap-2.5 mb-2.5">
+            <MinusCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+            <h3 className="text-xs sm:text-sm font-bold text-rose-950 dark:text-rose-200">
+              Negative Instances: Downward Specialization
+            </h3>
           </div>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
-            A negative example represents an instance that the target concept MUST NOT cover.
-          </p>
-          <ul className="space-y-2 text-xs text-slate-300">
-            <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">•</span>
-              <span><strong>Specialize G minimally:</strong> If a hypothesis in G covers the negative example, replace its wildcards with specific values that exclude the negative instance while remaining more general than some member of S.</span>
+          <ul className="space-y-1.5 text-xs theme-text-secondary leading-relaxed">
+            <li className="flex items-start gap-1.5">
+              <span className="text-rose-600 font-bold">•</span>
+              <span><strong>Specialize G minimally:</strong> If a hypothesis in G covers the negative instance, replace wildcards with specific values that exclude the negative instance while remaining more general than some member of S.</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">•</span>
-              <span><strong>Prune S:</strong> If any hypothesis in S accidentally covers the negative instance, it is discarded as inconsistent.</span>
+            <li className="flex items-start gap-1.5">
+              <span className="text-rose-600 font-bold">•</span>
+              <span><strong>Prune S:</strong> If any hypothesis in S accidentally covers the negative instance, it is eliminated as inconsistent.</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-rose-400 font-bold">•</span>
-              <span><strong>Eliminates overly general rules:</strong> Hypotheses above the new G are discarded because they are too permissive.</span>
+            <li className="flex items-start gap-1.5">
+              <span className="text-rose-600 font-bold">•</span>
+              <span><strong>Effect:</strong> Discards hypotheses that are overly general and permissive.</span>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* Interactive Generality Comparator */}
+      {/* Interactive Comparator */}
       <GeneralityComparator />
 
-      {/* Pipeline Flow Diagram */}
+      {/* Pipeline */}
       <FlowDiagram />
 
-      {/* Bottom CTA to Scenarios */}
-      <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 text-center">
-        <h3 className="text-lg font-bold text-white mb-2">Ready to test these principles live?</h3>
-        <p className="text-xs sm:text-sm text-slate-400 mb-5 max-w-xl mx-auto">
-          Choose one of the 4 educational scenarios to watch the Candidate Elimination algorithm process examples and update boundaries step by step.
+      {/* Action */}
+      <div className="p-5 rounded-xl border theme-border theme-surface text-center">
+        <h3 className="text-sm font-bold theme-text-primary mb-1">Ready to test in the laboratory workbench?</h3>
+        <p className="text-xs theme-text-muted mb-4 max-w-lg mx-auto">
+          Launch any of the 4 predefined scenarios to step through Candidate Elimination and watch version space contractions live.
         </p>
         <button
           onClick={onExploreScenarios}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-500/20 transition-all hover:scale-105"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-all"
         >
-          <Layers className="w-4 h-4" />
-          <span>Explore Scenarios</span>
-          <ArrowRight className="w-4 h-4 ml-1" />
+          <Layers className="w-3.5 h-3.5" />
+          <span>Launch Lab Scenarios</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

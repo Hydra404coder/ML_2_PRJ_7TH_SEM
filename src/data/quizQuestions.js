@@ -92,3 +92,4 @@ export const QUIZ_QUESTIONS = [
     explanation: 'The symbol Ø represents the empty set of accepted instances. Initializing S to ⟨Ø, Ø, ...⟩ ensures that S starts at the maximally specific point in the lattice before generalizing upon receiving positive evidence.',
   },
 ];
+

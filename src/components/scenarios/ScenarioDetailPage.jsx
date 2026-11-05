@@ -10,7 +10,6 @@ import {
   AlertTriangle,
   Play,
   RotateCcw,
-  Sparkles,
 } from 'lucide-react';
 import { DatasetTable } from './DatasetTable.jsx';
 import { ModeSelector } from './ModeSelector.jsx';
@@ -28,36 +27,36 @@ export function ScenarioDetailPage({ scenario, onStartExperiment, onBack }) {
   const Icon = iconMap[scenario.icon] || Sun;
 
   return (
-    <div className="py-8 max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
-      {/* Top Breadcrumb navigation and back */}
+    <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+      {/* Top back button */}
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors"
+          className="text-xs font-semibold theme-text-muted hover:theme-text-primary flex items-center gap-1 transition-colors"
         >
-          <span>← Back to All Scenarios</span>
+          <span>← Back to Lab Scenarios</span>
         </button>
-        <span className="text-xs text-slate-500 font-mono">Scenario ID: {scenario.id}</span>
+        <span className="text-xs theme-text-muted font-mono">Module: {scenario.id}</span>
       </div>
 
       {/* Main Scenario Header Card */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-6 rounded-xl border theme-border theme-surface shadow-subtle">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
-            <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-              <Icon className="w-8 h-8" />
+            <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0">
+              <Icon className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
                   {scenario.category}
                 </span>
-                <span className="text-xs text-slate-400">• {scenario.attributes.length} Attributes</span>
+                <span className="text-xs theme-text-muted">• {scenario.attributes.length} Discrete Attributes</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold theme-text-primary">
                 {scenario.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+              <p className="text-xs sm:text-sm theme-text-secondary mt-1 max-w-2xl leading-relaxed">
                 {scenario.description}
               </p>
             </div>
@@ -65,37 +64,37 @@ export function ScenarioDetailPage({ scenario, onStartExperiment, onBack }) {
 
           <button
             onClick={() => onStartExperiment(scenario.id, selectedMode)}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95 flex-shrink-0"
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all"
           >
             <Play className="w-4 h-4 fill-white" />
-            <span>Launch Experiment</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <span>Open Workbench</span>
+            <ArrowRight className="w-4 h-4 ml-0.5" />
           </button>
         </div>
 
-        {/* Target Concept Spotlight */}
-        <div className="mt-6 pt-6 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+        {/* Target Concept Box */}
+        <div className="mt-5 pt-5 border-t theme-border grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <div className="p-3.5 rounded-lg theme-surface-subtle border theme-border">
+            <div className="text-[10px] font-semibold theme-text-muted uppercase tracking-wider mb-1">
               Target Concept Question
             </div>
-            <div className="text-base font-bold text-white">
+            <div className="text-sm font-bold theme-text-primary">
               "{scenario.targetConceptQuestion}"
             </div>
-            <p className="text-xs text-slate-400 mt-1">{scenario.targetExplanation}</p>
+            <p className="text-xs theme-text-secondary mt-1">{scenario.targetExplanation}</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex flex-col justify-between">
+          <div className="p-3.5 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/60 flex flex-col justify-between">
             <div>
-              <div className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wider mb-1">
-                Conjunctive Target Hypothesis
+              <div className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider mb-1">
+                True Conjunctive Rule
               </div>
-              <div className="text-lg font-mono font-bold text-indigo-200">
+              <div className="text-base font-mono font-bold text-blue-900 dark:text-blue-200">
                 {scenario.targetConceptHypothesis}
               </div>
             </div>
-            <div className="text-[11px] text-indigo-300/80 mt-2">
-              The deterministic rule generating labels in the guided dataset
+            <div className="text-[11px] theme-text-muted mt-2">
+              Underlying rule consistent with the dataset
             </div>
           </div>
         </div>
@@ -104,33 +103,33 @@ export function ScenarioDetailPage({ scenario, onStartExperiment, onBack }) {
       {/* Attribute Space Breakdown */}
       <div>
         <div className="mb-3">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-indigo-400" />
-            <span>Attribute Domains</span>
+          <h2 className="text-sm font-bold theme-text-primary flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span>Attribute Domains & Discrete Values</span>
           </h2>
-          <p className="text-xs text-slate-400">
-            Properties describing every instance in this scenario's hypothesis space
+          <p className="text-xs theme-text-muted">
+            The instance space X is formed by the Cartesian product of these discrete attribute sets
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {scenario.attributes.map((attr) => (
             <div
               key={attr.name}
-              className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all"
+              className="p-3.5 rounded-lg theme-surface border theme-border shadow-subtle"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-bold text-white">{attr.name}</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-bold theme-text-primary">{attr.name}</span>
+                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border theme-border theme-surface-subtle theme-text-muted">
                   {attr.values.length} values
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mb-3">{attr.description}</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-[11px] theme-text-muted mb-2.5">{attr.description}</p>
+              <div className="flex flex-wrap gap-1">
                 {attr.values.map((val) => (
                   <span
                     key={val}
-                    className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-mono text-xs font-medium"
+                    className="px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 font-mono text-[11px] font-medium"
                   >
                     {val}
                   </span>
@@ -142,37 +141,37 @@ export function ScenarioDetailPage({ scenario, onStartExperiment, onBack }) {
       </div>
 
       {/* Mode Selector */}
-      <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800">
+      <div className="p-5 rounded-xl border theme-border theme-surface shadow-subtle">
         <ModeSelector selectedMode={selectedMode} onSelectMode={setSelectedMode} />
       </div>
 
       {/* Predefined Dataset Table */}
       <DatasetTable dataset={scenario.baseDataset} attributes={scenario.attributes} />
 
-      {/* Educational Disclaimer / Limitations */}
-      <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-start gap-3 text-xs text-amber-300/90">
-        <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+      {/* Educational Disclaimer */}
+      <div className="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-900/50 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+        <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-amber-200">Educational Model Disclaimer: </strong>
+          <strong>Educational Model Note: </strong>
           {scenario.disclaimer}
         </div>
       </div>
 
-      {/* Bottom CTA to start */}
-      <div className="flex items-center justify-between pt-4">
+      {/* Bottom Start Action */}
+      <div className="flex items-center justify-between pt-2">
         <button
           onClick={onBack}
-          className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 transition-colors"
+          className="px-3.5 py-2 rounded-lg text-xs font-medium theme-surface border theme-border hover:theme-surface-subtle theme-text-muted transition-colors"
         >
           Cancel
         </button>
 
         <button
           onClick={() => onStartExperiment(scenario.id, selectedMode)}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-500/25 transition-all hover:scale-105"
+          className="flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-all"
         >
-          <Play className="w-4 h-4 fill-white" />
-          <span>Start Experiment with {selectedMode.toUpperCase()} mode</span>
+          <Play className="w-3.5 h-3.5 fill-white" />
+          <span>Launch Workbench ({selectedMode})</span>
         </button>
       </div>
     </div>

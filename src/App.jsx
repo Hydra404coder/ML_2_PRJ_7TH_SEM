@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import { Navbar } from './components/layout/Navbar.jsx';
 import { Breadcrumbs } from './components/layout/Breadcrumbs.jsx';
 import { Footer } from './components/layout/Footer.jsx';
@@ -16,7 +17,7 @@ import { KnowledgeCheck } from './components/quiz/KnowledgeCheck.jsx';
 
 import { SCENARIOS } from './data/scenarios.js';
 
-export function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' | 'fundamentals' | 'scenarios' | 'scenario-detail' | 'experiment' | 'quiz'
   const [activeScenarioId, setActiveScenarioId] = useState('outdoor-sports');
   const [activeModeId, setActiveModeId] = useState('guided');
@@ -48,22 +49,21 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Compute breadcrumb trail
   const getBreadcrumbItems = () => {
     if (activeTab === 'dashboard') return [];
-    if (activeTab === 'fundamentals') return [{ label: 'Fundamentals' }];
-    if (activeTab === 'scenarios') return [{ label: 'Explore Scenarios' }];
+    if (activeTab === 'fundamentals') return [{ label: 'Theory Notes' }];
+    if (activeTab === 'scenarios') return [{ label: 'Lab Scenarios' }];
     if (activeTab === 'scenario-detail') {
       return [
-        { label: 'Scenarios', tab: 'scenarios' },
+        { label: 'Lab Scenarios', tab: 'scenarios' },
         { label: currentScenario.shortTitle },
       ];
     }
     if (activeTab === 'experiment') {
       return [
-        { label: 'Scenarios', tab: 'scenarios' },
+        { label: 'Lab Scenarios', tab: 'scenarios' },
         { label: currentScenario.shortTitle, tab: 'scenario-detail' },
-        { label: 'Experiment Workspace' },
+        { label: 'Workbench' },
       ];
     }
     if (activeTab === 'quiz') return [{ label: 'Knowledge Check' }];
@@ -71,24 +71,23 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Top Sticky Navigation */}
+    <div className="min-h-screen flex flex-col font-sans transition-colors">
+      {/* Institutional Top Navbar */}
       <Navbar
         activeTab={activeTab}
         onNavigate={handleNavigate}
         onOpenGlossary={() => setIsGlossaryOpen(true)}
       />
 
-      {/* Breadcrumb Trail */}
+      {/* Breadcrumb Navigation */}
       {activeTab !== 'dashboard' && (
         <Breadcrumbs items={getBreadcrumbItems()} onNavigate={handleNavigate} />
       )}
 
-      {/* Main Content Area */}
+      {/* Main Content View */}
       <main className="flex-1">
-        {/* DASHBOARD */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-0">
+          <div>
             <DashboardHero
               onStartLearning={() => handleNavigate('fundamentals')}
               onExploreScenarios={() => handleNavigate('scenarios')}
@@ -99,19 +98,16 @@ export function App() {
           </div>
         )}
 
-        {/* FUNDAMENTALS */}
         {activeTab === 'fundamentals' && (
           <FundamentalsView onExploreScenarios={() => handleNavigate('scenarios')} />
         )}
 
-        {/* SCENARIOS GRID */}
         {activeTab === 'scenarios' && (
-          <div className="py-6">
+          <div className="py-4">
             <ScenarioGrid onSelectScenario={handleSelectScenario} />
           </div>
         )}
 
-        {/* SCENARIO DETAIL PAGE */}
         {activeTab === 'scenario-detail' && (
           <ScenarioDetailPage
             scenario={currentScenario}
@@ -120,7 +116,6 @@ export function App() {
           />
         )}
 
-        {/* EXPERIMENT WORKSPACE */}
         {activeTab === 'experiment' && (
           <ExperimentWorkspace
             scenario={currentScenario}
@@ -130,7 +125,6 @@ export function App() {
           />
         )}
 
-        {/* KNOWLEDGE CHECK / QUIZ */}
         {activeTab === 'quiz' && (
           <KnowledgeCheck
             onBackToDashboard={() => handleNavigate('dashboard')}
@@ -139,15 +133,23 @@ export function App() {
         )}
       </main>
 
-      {/* Footer */}
+      {/* Institutional Footer */}
       <Footer onNavigate={handleNavigate} />
 
-      {/* Concept Learning Glossary Modal */}
+      {/* Terminology Glossary Modal */}
       <GlossaryModal
         isOpen={isGlossaryOpen}
         onClose={() => setIsGlossaryOpen(false)}
       />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

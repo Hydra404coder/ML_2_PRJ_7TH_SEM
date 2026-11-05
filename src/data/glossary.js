@@ -70,3 +70,4 @@ export const GLOSSARY_TERMS = [
     fullDef: 'If some surviving hypotheses in the version space cover the test instance (predicting YES) while others do not (predicting NO), the available training data cannot logically distinguish the answer. The learner honestly reports UNCERTAIN.',
   },
 ];
+

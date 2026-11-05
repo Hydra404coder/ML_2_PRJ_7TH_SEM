@@ -188,3 +188,4 @@ function isImmediateGeneralizationSimple(hGen, hSpec) {
   }
   return wildcardDiff === 1;
 }
+

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
   isMoreGeneralOrEqual,
-  isStrictlyMoreGeneral,
   areEqual,
   formatHypothesis,
-  ANY,
 } from '../../engine/hypothesis.js';
-import { Check, X, ArrowRight, HelpCircle, Sparkles } from 'lucide-react';
+import { Check, X, ArrowRight, Sparkles } from 'lucide-react';
 
 export function GeneralityComparator() {
   const PRESET_PAIRS = [
@@ -14,25 +12,25 @@ export function GeneralityComparator() {
       name: 'General vs Constrained',
       h1: ['?', 'Warm', '?'],
       h2: ['Sunny', 'Warm', 'Weak'],
-      explanation: '⟨?, Warm, ?⟩ accepts any Sky and Wind as long as Temp is Warm. Since ⟨Sunny, Warm, Weak⟩ has Temp=Warm, every instance covered by h₂ is also covered by h₁.',
+      explanation: '⟨?, Warm, ?⟩ accepts any Sky and Wind as long as Temp is Warm. Because ⟨Sunny, Warm, Weak⟩ has Temp=Warm, every instance accepted by h₂ is also accepted by h₁.',
     },
     {
       name: 'Incomparable (Different Attributes)',
       h1: ['Sunny', '?', '?'],
       h2: ['?', 'Warm', '?'],
-      explanation: 'Neither is more general! h₁ covers ⟨Sunny, Cold, Weak⟩ (which h₂ rejects), while h₂ covers ⟨Rainy, Warm, Weak⟩ (which h₁ rejects). They are incomparable in the partial ordering.',
+      explanation: 'Neither is more general! h₁ covers ⟨Sunny, Cold, Weak⟩ (which h₂ rejects), while h₂ covers ⟨Rainy, Warm, Weak⟩ (which h₁ rejects). In a poset lattice, they sit on separate incomparable branches.',
     },
     {
       name: 'Wildcard Dominance',
       h1: ['?', '?', '?'],
       h2: ['Sunny', 'Warm', '?'],
-      explanation: '⟨?, ?, ?⟩ has wildcards everywhere, so it is strictly more general than any non-empty hypothesis with specific values.',
+      explanation: '⟨?, ?, ?⟩ has wildcards everywhere, making it strictly more general than any non-empty hypothesis containing specific constraints.',
     },
     {
       name: 'Specific vs Partially Constrained',
       h1: ['Sunny', 'Warm', 'Strong'],
       h2: ['Sunny', 'Warm', '?'],
-      explanation: 'h₁ is actually MORE SPECIFIC than h₂! h₂ allows both Weak and Strong wind, whereas h₁ restricts wind strictly to Strong.',
+      explanation: 'h₁ is actually MORE SPECIFIC than h₂! h₂ permits both Weak and Strong wind, whereas h₁ restricts Wind strictly to Strong.',
     },
   ];
 
@@ -57,46 +55,46 @@ export function GeneralityComparator() {
   };
 
   return (
-    <div className="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <span>Interactive Tool: "Is Hypothesis A More General Than B?"</span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-              Interactive Poset
-            </span>
-          </h3>
-        </div>
-        <p className="text-xs text-slate-400">
-          Configure two hypotheses or pick a preset pair to examine whether h₁ ≥_g h₂.
+    <div className="p-5 sm:p-6 rounded-xl border theme-border theme-surface shadow-subtle">
+      <div className="mb-4">
+        <h3 className="text-sm font-bold theme-text-primary flex items-center gap-2">
+          <span>Interactive Tool: "Is Hypothesis A More General Than B?"</span>
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold">
+            Order Tester
+          </span>
+        </h3>
+        <p className="text-xs theme-text-muted mt-0.5">
+          Select hypotheses to evaluate the partial order relation h₁ ≥_g h₂ attribute by attribute.
         </p>
       </div>
 
       {/* Preset pills */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-1.5 mb-4">
         {PRESET_PAIRS.map((preset) => (
           <button
             key={preset.name}
             onClick={() => handleSelectPreset(preset)}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors"
+            className="px-2.5 py-1 rounded-md text-xs font-medium theme-surface-subtle border theme-border hover:theme-border-strong theme-text-secondary transition-colors"
           >
             {preset.name}
           </button>
         ))}
       </div>
 
-      {/* Hypothesis Selectors */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      {/* Selectors */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         {/* H1 Box */}
-        <div className="p-4 rounded-xl bg-slate-950/70 border border-indigo-500/40">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Hypothesis h₁</span>
-            <span className="font-mono text-xs font-semibold text-indigo-300">{formatHypothesis(h1)}</span>
+        <div className="p-3.5 rounded-lg theme-surface-subtle border border-blue-300 dark:border-blue-900">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+              Hypothesis h₁
+            </span>
+            <span className="font-mono text-xs font-bold theme-text-primary">{formatHypothesis(h1)}</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {attributes.map((attr, idx) => (
               <div key={attr.name} className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">{attr.name}:</span>
+                <span className="theme-text-muted">{attr.name}:</span>
                 <select
                   value={h1[idx]}
                   onChange={(e) => {
@@ -105,7 +103,7 @@ export function GeneralityComparator() {
                     setH1(next);
                     setRevealed(false);
                   }}
-                  className="bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+                  className="theme-surface border theme-border rounded px-2 py-0.5 text-xs theme-text-primary font-mono focus:outline-none focus:border-blue-500"
                 >
                   {attr.options.map((opt) => (
                     <option key={opt} value={opt}>
@@ -119,15 +117,17 @@ export function GeneralityComparator() {
         </div>
 
         {/* H2 Box */}
-        <div className="p-4 rounded-xl bg-slate-950/70 border border-emerald-500/40">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Hypothesis h₂</span>
-            <span className="font-mono text-xs font-semibold text-emerald-300">{formatHypothesis(h2)}</span>
+        <div className="p-3.5 rounded-lg theme-surface-subtle border border-emerald-300 dark:border-emerald-900">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+              Hypothesis h₂
+            </span>
+            <span className="font-mono text-xs font-bold theme-text-primary">{formatHypothesis(h2)}</span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {attributes.map((attr, idx) => (
               <div key={attr.name} className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">{attr.name}:</span>
+                <span className="theme-text-muted">{attr.name}:</span>
                 <select
                   value={h2[idx]}
                   onChange={(e) => {
@@ -136,7 +136,7 @@ export function GeneralityComparator() {
                     setH2(next);
                     setRevealed(false);
                   }}
-                  className="bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                  className="theme-surface border theme-border rounded px-2 py-0.5 text-xs theme-text-primary font-mono focus:outline-none focus:border-emerald-500"
                 >
                   {attr.options.map((opt) => (
                     <option key={opt} value={opt}>
@@ -150,45 +150,44 @@ export function GeneralityComparator() {
         </div>
       </div>
 
-      {/* Action / Reveal Button */}
-      <div className="flex items-center justify-center mb-6">
+      {/* Action */}
+      <div className="flex items-center justify-center mb-4">
         <button
           onClick={() => setRevealed(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-500/20 transition-all hover:scale-105"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-all"
         >
-          <Sparkles className="w-4 h-4" />
-          <span>Compare Generality Relationship</span>
+          <span>Evaluate Generality Ordering (h₁ ≥_g h₂)</span>
         </button>
       </div>
 
-      {/* Answer & Explanation Box */}
+      {/* Answer */}
       {revealed && (
-        <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 animate-in fade-in duration-300">
-          <div className="flex items-center gap-2 mb-2 font-bold text-sm">
+        <div className="p-3.5 rounded-lg border theme-border theme-surface-subtle animate-in fade-in duration-150">
+          <div className="flex items-center gap-2 mb-2 font-bold text-xs sm:text-sm">
             {identical ? (
-              <span className="text-purple-300 flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-purple-400" />
+              <span className="text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                <Check className="w-4 h-4" />
                 h₁ and h₂ are identical (equally general)
               </span>
             ) : h1GeqH2 ? (
-              <span className="text-emerald-300 flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-400" />
-                YES: h₁ is strictly more general than h₂ (h₁ &gt;_g h₂)
+              <span className="text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                <Check className="w-4 h-4" />
+                TRUE: h₁ is strictly more general than h₂ (h₁ &gt;_g h₂)
               </span>
             ) : h2GeqH1 ? (
-              <span className="text-amber-300 flex items-center gap-1.5">
-                <ArrowRight className="w-4 h-4 text-amber-400" />
-                NO: h₁ is actually more SPECIFIC than h₂ (h₂ &gt;_g h₁)
+              <span className="text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+                <ArrowRight className="w-4 h-4" />
+                FALSE: h₁ is actually more SPECIFIC than h₂ (h₂ &gt;_g h₁)
               </span>
             ) : (
-              <span className="text-rose-300 flex items-center gap-1.5">
-                <X className="w-4 h-4 text-rose-400" />
+              <span className="text-rose-700 dark:text-rose-300 flex items-center gap-1.5">
+                <X className="w-4 h-4" />
                 INCOMPARABLE: Neither hypothesis is more general than the other
               </span>
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-2 my-3 text-[11px] font-mono">
+          <div className="grid grid-cols-3 gap-2 my-2 text-[11px] font-mono">
             {attributes.map((attr, idx) => {
               const c1 = h1[idx];
               const c2 = h2[idx];
@@ -196,30 +195,28 @@ export function GeneralityComparator() {
               return (
                 <div
                   key={attr.name}
-                  className={`p-2 rounded-lg border text-center ${
+                  className={`p-1.5 rounded border text-center ${
                     ok
-                      ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30'
-                      : 'bg-rose-950/40 text-rose-300 border-rose-500/30'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800'
                   }`}
                 >
-                  <div className="text-[10px] text-slate-400 mb-0.5">{attr.name}</div>
-                  <div>
-                    {c1} vs {c2}
-                  </div>
-                  <div className="text-[10px] mt-0.5">{ok ? '✓ covers' : '✗ fails'}</div>
+                  <div className="text-[10px] theme-text-muted">{attr.name}</div>
+                  <div className="font-bold">{c1} vs {c2}</div>
+                  <div className="text-[10px]">{ok ? '✓ covers' : '✗ mismatch'}</div>
                 </div>
               );
             })}
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed mt-2">
+          <p className="text-xs theme-text-secondary leading-relaxed mt-2">
             {identical
               ? 'Both hypotheses place identical constraints on all attributes, covering the exact same set of instances.'
               : h1GeqH2
-              ? `Every instance accepted by ${formatHypothesis(h2)} is guaranteed to be accepted by ${formatHypothesis(h1)}, because h₁ has wildcards or matching values at every constraint.`
+              ? `Every instance accepted by ${formatHypothesis(h2)} is guaranteed to be accepted by ${formatHypothesis(h1)}.`
               : h2GeqH1
               ? `${formatHypothesis(h2)} is broader than ${formatHypothesis(h1)}. All instances accepted by h₁ are also accepted by h₂.`
-              : `Because h₁ and h₂ constrain different attributes to specific values without overlapping wildcards, neither encompasses the other. In a lattice poset, they sit on separate incomparable branches.`}
+              : `Because h₁ and h₂ constrain different attributes to specific values without overlapping wildcards, neither encompasses the other.`}
           </p>
         </div>
       )}

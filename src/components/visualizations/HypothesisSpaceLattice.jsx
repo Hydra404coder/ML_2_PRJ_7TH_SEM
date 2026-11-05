@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   ZoomIn,
   ZoomOut,
@@ -7,11 +7,12 @@ import {
   Check,
   X,
   ShieldCheck,
-  Info,
-  Sparkles,
+  Eye,
+  Sliders,
+  Layers,
 } from 'lucide-react';
 import { HypothesisNodeModal } from './HypothesisNodeModal.jsx';
-import { formatHypothesis } from '../../engine/hypothesis.js';
+import { formatHypothesis, isImmediateGeneralization } from '../../engine/hypothesis.js';
 
 export function HypothesisSpaceLattice({
   hypothesisStatusList,
@@ -23,11 +24,11 @@ export function HypothesisSpaceLattice({
   const [filterMode, setFilterMode] = useState('all'); // 'all' | 'consistent' | 'boundaries'
   const [zoomScale, setZoomScale] = useState(1);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [showEdges, setShowEdges] = useState(true);
 
-  // Group hypotheses by generality level: 3, 2, 1, 0, -1
+  // Group hypotheses by level: 3, 2, 1, 0, -1
   const levels = useMemo(() => {
     const map = new Map();
-    // Initialize standard levels
     for (let l = 3; l >= -1; l--) {
       map.set(l, []);
     }
@@ -39,96 +40,97 @@ export function HypothesisSpaceLattice({
       }
       map.get(lvl).push(h);
     }
-
     return map;
   }, [hypothesisStatusList]);
 
-  const levelLabels = {
-    3: { title: 'Level 3: Top (3 Wildcards)', desc: 'Maximally General', color: 'text-indigo-400' },
-    2: { title: 'Level 2: High (2 Wildcards)', desc: 'Partially General', color: 'text-sky-400' },
-    1: { title: 'Level 1: Mid (1 Wildcard)', desc: 'More Specific', color: 'text-teal-400' },
-    0: { title: 'Level 0: Ground (0 Wildcards)', desc: 'Fully Specific Instances', color: 'text-emerald-400' },
-    [-1]: { title: 'Level -1: Bottom (Null Ø)', desc: 'Maximally Specific Starting State', color: 'text-slate-500' },
+  const levelInfo = {
+    3: { label: 'Level 3: Top Boundary (3 Wildcards)', desc: 'Maximally General (G₀)' },
+    2: { label: 'Level 2: High (2 Wildcards)', desc: 'Single Attribute Constrained' },
+    1: { label: 'Level 1: Mid (1 Wildcard)', desc: 'Two Attributes Constrained' },
+    0: { label: 'Level 0: Ground (0 Wildcards)', desc: 'Fully Specific Instances' },
+    [-1]: { label: 'Level -1: Bottom (Null Ø)', desc: 'Maximally Specific (S₀)' },
   };
 
-  const handleZoomIn = () => setZoomScale(prev => Math.min(prev + 0.15, 1.5));
+  const handleZoomIn = () => setZoomScale(prev => Math.min(prev + 0.15, 1.4));
   const handleZoomOut = () => setZoomScale(prev => Math.max(prev - 0.15, 0.7));
   const handleZoomReset = () => setZoomScale(1);
 
   return (
-    <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col">
-      {/* Top Controls Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+    <div className="rounded-xl border theme-border theme-surface shadow-subtle overflow-hidden">
+      {/* Workbench Header Toolbar */}
+      <div className="px-5 py-3.5 border-b theme-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 theme-surface-subtle">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-white">Hypothesis-Space Lattice Explorer</h3>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+            <h3 className="text-sm font-bold theme-text-primary">
+              Hypothesis-Space Lattice Workbench
+            </h3>
+            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border theme-border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
               Poset Graph
             </span>
           </div>
-          <p className="text-xs text-slate-400">
-            Hierarchical general-to-specific layout. Click any hypothesis to inspect its status.
+          <p className="text-xs theme-text-muted mt-0.5">
+            General-to-Specific partial order. Click any hypothesis node to inspect constraints and elimination reason.
           </p>
         </div>
 
-        {/* Filters and Zoom Buttons */}
+        {/* Toolbar controls */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Filter tabs */}
-          <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-medium">
+          {/* Filter options */}
+          <div className="flex items-center rounded-lg border theme-border theme-surface p-0.5 text-xs">
             <button
               onClick={() => setFilterMode('all')}
-              className={`px-2.5 py-1 rounded-lg transition-colors ${
+              className={`px-2.5 py-1 rounded-md transition-colors ${
                 filterMode === 'all'
-                  ? 'bg-indigo-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'theme-text-secondary hover:theme-surface-subtle'
               }`}
             >
               All ({hypothesisStatusList.length})
             </button>
             <button
               onClick={() => setFilterMode('consistent')}
-              className={`px-2.5 py-1 rounded-lg transition-colors ${
+              className={`px-2.5 py-1 rounded-md transition-colors ${
                 filterMode === 'consistent'
-                  ? 'bg-indigo-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'theme-text-secondary hover:theme-surface-subtle'
               }`}
             >
               Surviving ({hypothesisStatusList.filter(h => h.isConsistent).length})
             </button>
             <button
               onClick={() => setFilterMode('boundaries')}
-              className={`px-2.5 py-1 rounded-lg transition-colors ${
+              className={`px-2.5 py-1 rounded-md transition-colors ${
                 filterMode === 'boundaries'
-                  ? 'bg-indigo-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'theme-text-secondary hover:theme-surface-subtle'
               }`}
             >
-              S & G Only ({S.length + G.length})
+              S & G ({S.length + G.length})
             </button>
           </div>
 
-          {/* Zoom controls */}
-          <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
+          {/* Zoom Controls */}
+          <div className="flex items-center rounded-lg border theme-border theme-surface p-0.5 text-xs">
             <button
               onClick={handleZoomOut}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              title="Zoom out"
+              className="p-1 rounded-md theme-text-secondary hover:theme-surface-subtle"
+              title="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="text-[11px] font-mono px-2 text-slate-400">
+            <span className="text-[11px] font-mono px-2 theme-text-muted">
               {Math.round(zoomScale * 100)}%
             </span>
             <button
               onClick={handleZoomIn}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              title="Zoom in"
+              className="p-1 rounded-md theme-text-secondary hover:theme-surface-subtle"
+              title="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleZoomReset}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors ml-1"
+              className="p-1 rounded-md theme-text-secondary hover:theme-surface-subtle ml-0.5"
               title="Reset Zoom"
             >
               <Maximize2 className="w-3.5 h-3.5" />
@@ -137,31 +139,31 @@ export function HypothesisSpaceLattice({
         </div>
       </div>
 
-      {/* Interactive Legend */}
-      <div className="flex flex-wrap items-center gap-3 py-3 border-b border-slate-800/80 text-[11px] text-slate-400">
-        <span className="font-semibold text-slate-300">Legend:</span>
+      {/* Legend Bar */}
+      <div className="px-5 py-2 border-b theme-border bg-slate-50/60 dark:bg-slate-900/40 flex flex-wrap items-center gap-4 text-[11px] theme-text-muted">
+        <span className="font-semibold theme-text-secondary">Visual Key:</span>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded border-2 border-indigo-500 bg-indigo-950/80" />
-          <span>G Boundary</span>
+          <span className="w-3 h-3 rounded border-2 border-blue-500 bg-blue-100 dark:bg-blue-950" />
+          <span className="theme-text-primary font-medium">G Boundary (General)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded border-2 border-emerald-500 bg-emerald-950/80" />
-          <span>S Boundary</span>
+          <span className="w-3 h-3 rounded border-2 border-emerald-500 bg-emerald-100 dark:bg-emerald-950" />
+          <span className="theme-text-primary font-medium">S Boundary (Specific)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded border border-cyan-500/50 bg-slate-800" />
+          <span className="w-3 h-3 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800" />
           <span>Consistent (In VS)</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded border border-slate-800 bg-slate-950 line-through opacity-50" />
+          <span className="w-3 h-3 rounded border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 line-through opacity-50" />
           <span>Eliminated</span>
         </div>
       </div>
 
-      {/* Lattice Container */}
-      <div className="relative overflow-x-auto overflow-y-auto py-6 min-h-[380px] max-h-[560px] bg-slate-950/40 rounded-xl mt-3 p-4">
+      {/* Lattice Canvas with Graph Background */}
+      <div className="engineering-grid relative overflow-x-auto overflow-y-auto p-6 min-h-[420px] max-h-[580px] bg-slate-50/30 dark:bg-slate-950/40">
         <div
-          className="flex flex-col items-center gap-6 min-w-[650px] transition-transform duration-200 origin-top"
+          className="flex flex-col items-center gap-6 min-w-[620px] transition-transform duration-150 origin-top"
           style={{ transform: `scale(${zoomScale})` }}
         >
           {[3, 2, 1, 0, -1].map((levelKey) => {
@@ -173,22 +175,21 @@ export function HypothesisSpaceLattice({
             });
 
             if (filteredNodes.length === 0 && filterMode !== 'all') return null;
-
-            const info = levelLabels[levelKey] || { title: `Level ${levelKey}`, color: 'text-slate-400' };
+            const info = levelInfo[levelKey] || { label: `Level ${levelKey}`, desc: '' };
 
             return (
               <div key={levelKey} className="w-full flex flex-col items-center">
-                {/* Level Title */}
-                <div className="flex items-center gap-2 mb-2 text-center">
-                  <span className={`text-[11px] font-mono font-bold tracking-wider ${info.color}`}>
-                    {info.title}
+                {/* Level Title Tag */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11px] font-mono font-bold theme-text-muted uppercase tracking-wider">
+                    {info.label}
                   </span>
-                  <span className="text-[10px] text-slate-500">
-                    ({filteredNodes.length} node{filteredNodes.length !== 1 ? 's' : ''})
+                  <span className="text-[10px] theme-text-muted">
+                    ({filteredNodes.length} nodes)
                   </span>
                 </div>
 
-                {/* Nodes row */}
+                {/* Nodes Row */}
                 <div className="flex flex-wrap items-center justify-center gap-2 max-w-5xl">
                   {filteredNodes.map((node) => {
                     const isConsistent = node.isConsistent;
@@ -197,41 +198,41 @@ export function HypothesisSpaceLattice({
                     const isBoth = inS && inG;
 
                     let nodeStyle =
-                      'bg-slate-950/80 border-slate-800/80 text-slate-600 line-through opacity-45 hover:opacity-90';
+                      'theme-surface border theme-border opacity-40 line-through text-slate-400 dark:text-slate-600 hover:opacity-90';
 
                     if (isBoth) {
                       nodeStyle =
-                        'bg-gradient-to-r from-emerald-950 to-indigo-950 border-2 border-purple-400 text-purple-200 shadow-lg shadow-purple-500/20 scale-105';
+                        'bg-purple-50 dark:bg-purple-950/80 border-2 border-purple-500 text-purple-900 dark:text-purple-200 font-bold shadow-md scale-105';
                     } else if (inG) {
                       nodeStyle =
-                        'bg-indigo-950/80 border-2 border-indigo-400 text-indigo-100 shadow-md shadow-indigo-500/20 font-bold';
+                        'bg-blue-50 dark:bg-blue-950/80 border-2 border-blue-500 text-blue-900 dark:text-blue-200 font-bold shadow-sm';
                     } else if (inS) {
                       nodeStyle =
-                        'bg-emerald-950/80 border-2 border-emerald-400 text-emerald-100 shadow-md shadow-emerald-500/20 font-bold';
+                        'bg-emerald-50 dark:bg-emerald-950/80 border-2 border-emerald-500 text-emerald-900 dark:text-emerald-200 font-bold shadow-sm';
                     } else if (isConsistent) {
                       nodeStyle =
-                        'bg-slate-800/90 border border-slate-600 text-slate-200 hover:border-slate-400 shadow-sm';
+                        'theme-surface border border-slate-300 dark:border-slate-700 theme-text-primary hover:border-blue-400 shadow-subtle';
                     }
 
                     return (
                       <button
                         key={node.id}
                         onClick={() => setSelectedNode(node)}
-                        className={`relative group px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 ${nodeStyle}`}
-                        title={`Click to inspect ${node.label || node.id}`}
+                        className={`group px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 ${nodeStyle}`}
+                        title={`Inspect hypothesis ${node.label || node.id}`}
                       >
                         <span>{node.label || formatHypothesis(node.values)}</span>
 
                         {isBoth ? (
-                          <span className="text-[9px] font-sans px-1 rounded bg-purple-500 text-white font-bold">
+                          <span className="text-[9px] font-sans px-1 rounded bg-purple-600 text-white font-bold">
                             S=G
                           </span>
                         ) : inG ? (
-                          <span className="text-[9px] font-sans px-1 rounded bg-indigo-500 text-white font-bold">
+                          <span className="text-[9px] font-sans px-1 rounded bg-blue-600 text-white font-bold">
                             G
                           </span>
                         ) : inS ? (
-                          <span className="text-[9px] font-sans px-1 rounded bg-emerald-500 text-white font-bold">
+                          <span className="text-[9px] font-sans px-1 rounded bg-emerald-600 text-white font-bold">
                             S
                           </span>
                         ) : null}
@@ -245,7 +246,7 @@ export function HypothesisSpaceLattice({
         </div>
       </div>
 
-      {/* Hypothesis Detail Popover Modal */}
+      {/* Node Inspector Modal */}
       {selectedNode && (
         <HypothesisNodeModal
           node={selectedNode}

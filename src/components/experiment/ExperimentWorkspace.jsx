@@ -19,13 +19,11 @@ import { PredictionExplorer } from '../prediction/PredictionExplorer.jsx';
 import { ResultsSummary } from '../results/ResultsSummary.jsx';
 import {
   ArrowLeft,
-  Layers,
   Table,
   Zap,
   Sparkles,
-  Award,
-  Database,
   Sliders,
+  Database,
 } from 'lucide-react';
 
 export function ExperimentWorkspace({
@@ -39,7 +37,6 @@ export function ExperimentWorkspace({
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showExplanation, setShowExplanation] = useState(true);
   const [activeBottomView, setActiveBottomView] = useState('table'); // 'table' | 'chart' | 'prediction' | 'results'
-  const [activeCenterView, setActiveCenterView] = useState('lattice'); // 'lattice' | 'table'
 
   const autoplayTimerRef = useRef(null);
 
@@ -56,7 +53,6 @@ export function ExperimentWorkspace({
 
   const attrNames = useMemo(() => scenario.attributes.map(a => a.name), [scenario]);
 
-  // Full hypothesis space generated once
   const fullHypothesisSpace = useMemo(() => {
     return generateHypothesisSpace(scenario.attributes);
   }, [scenario]);
@@ -146,7 +142,6 @@ export function ExperimentWorkspace({
   const currentStepData = trajectory[currentStep] || trajectory[0];
   const previousStepData = currentStep > 0 ? trajectory[currentStep - 1] : null;
 
-  // Autoplay handler
   useEffect(() => {
     if (isPlaying) {
       if (currentStep >= totalSteps) {
@@ -154,7 +149,7 @@ export function ExperimentWorkspace({
         return;
       }
 
-      const speedMap = { 1: 2200, 1.5: 1400, 2: 850 };
+      const speedMap = { 1: 2000, 1.5: 1300, 2: 800 };
       const intervalMs = speedMap[playbackSpeed] || 2000;
 
       autoplayTimerRef.current = setTimeout(() => {
@@ -197,74 +192,74 @@ export function ExperimentWorkspace({
   };
 
   return (
-    <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+    <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 space-y-5">
       {/* Top Header Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-md">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border theme-border theme-surface shadow-subtle">
         <div className="flex items-center gap-3">
           <button
             onClick={onBackToScenarios}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+            className="p-1.5 rounded-lg border theme-border theme-surface-subtle hover:theme-border-strong theme-text-secondary transition-colors"
             title="Return to scenarios list"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-white">{scenario.title}</h1>
-              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 capitalize">
+              <h1 className="text-base sm:text-lg font-bold theme-text-primary">{scenario.title}</h1>
+              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 capitalize">
                 {modeId.replace('-', ' ')} Mode
               </span>
             </div>
-            <p className="text-xs text-slate-400">
-              Target: <span className="text-indigo-300 font-medium">"{scenario.targetConceptQuestion}"</span>
+            <p className="text-xs theme-text-muted">
+              Target Concept Question: <span className="font-medium theme-text-secondary">"{scenario.targetConceptQuestion}"</span>
             </p>
           </div>
         </div>
 
-        {/* Quick Navigation Tabs for Bottom Panels */}
-        <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        {/* View Switcher Pills */}
+        <div className="flex items-center rounded-lg border theme-border theme-surface-subtle p-0.5 text-xs font-semibold">
           <button
             onClick={() => setActiveBottomView('table')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors ${
               activeBottomView === 'table'
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'theme-text-secondary hover:theme-surface'
             }`}
           >
             <Table className="w-3.5 h-3.5" />
-            <span>Hypothesis Table</span>
+            <span>Matrix Registry</span>
           </button>
 
           <button
             onClick={() => setActiveBottomView('chart')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors ${
               activeBottomView === 'chart'
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'theme-text-secondary hover:theme-surface'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
-            <span>Contraction Chart</span>
+            <span>Contraction Curve</span>
           </button>
 
           <button
             onClick={() => setActiveBottomView('prediction')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors ${
               activeBottomView === 'prediction'
-                ? 'bg-emerald-600 text-white'
-                : 'text-slate-400 hover:text-emerald-300'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'theme-text-secondary hover:theme-surface'
             }`}
           >
             <Zap className="w-3.5 h-3.5" />
-            <span>Prediction Explorer</span>
+            <span>Test Query</span>
           </button>
 
           <button
             onClick={() => setActiveBottomView('results')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-colors ${
               activeBottomView === 'results'
-                ? 'bg-purple-600 text-white'
-                : 'text-slate-400 hover:text-purple-300'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'theme-text-secondary hover:theme-surface'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -290,9 +285,9 @@ export function ExperimentWorkspace({
         onOpenResults={() => setActiveBottomView('results')}
       />
 
-      {/* 3-Panel Main Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Left Panel: Current Example Card (4 cols) */}
+      {/* Split Observation Bench */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Left: Active Training Instance (4 cols) */}
         <div className="lg:col-span-4 flex flex-col">
           <CurrentExampleCard
             currentExample={currentStepData.example}
@@ -302,9 +297,8 @@ export function ExperimentWorkspace({
           />
         </div>
 
-        {/* Right / Center Panel: Boundary Display + Lattice / Table (8 cols) */}
+        {/* Right: S & G Boundaries + Commentary (8 cols) */}
         <div className="lg:col-span-8 flex flex-col space-y-4">
-          {/* Top Boundaries Summary */}
           <BoundaryDisplay
             S={currentStepData.S}
             G={currentStepData.G}
@@ -312,7 +306,6 @@ export function ExperimentWorkspace({
             versionSpaceCount={currentStepData.vsCount}
           />
 
-          {/* Explanation if toggled */}
           {showExplanation && (
             <ExplanationCard
               explanation={currentStepData.explanation}
@@ -326,7 +319,7 @@ export function ExperimentWorkspace({
         </div>
       </div>
 
-      {/* Center Lattice Visualization */}
+      {/* Centerpiece: The Hypothesis Lattice Workbench */}
       <HypothesisSpaceLattice
         hypothesisStatusList={currentStepData.versionSpaceState.allHypotheses}
         attributes={scenario.attributes}
@@ -335,8 +328,8 @@ export function ExperimentWorkspace({
         currentStep={currentStep}
       />
 
-      {/* Lower Section: Swappable Views (Table / Chart / Prediction / Results) */}
-      <div className="mt-8">
+      {/* Bottom Collapsible Section: Matrix Table / Chart / Prediction / Results */}
+      <div className="mt-4">
         {activeBottomView === 'table' && (
           <HypothesisTable
             hypothesisStatusList={currentStepData.versionSpaceState.allHypotheses}

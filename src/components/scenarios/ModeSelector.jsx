@@ -13,10 +13,10 @@ export function ModeSelector({ selectedMode, onSelectMode }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-          Select Experiment Mode
+        <label className="text-xs font-bold uppercase tracking-wider theme-text-primary">
+          Select Learning Mode
         </label>
-        <span className="text-xs text-slate-500">Pick how data is fed into the learner</span>
+        <span className="text-xs theme-text-muted">Choose training observation filter</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -28,40 +28,40 @@ export function ModeSelector({ selectedMode, onSelectMode }) {
             <div
               key={mode.id}
               onClick={() => onSelectMode(mode.id)}
-              className={`relative p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+              className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-500/10'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 hover:bg-slate-850'
+                  ? 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-500 shadow-sm'
+                  : 'theme-surface border theme-border hover:theme-surface-subtle'
               }`}
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
                     <div
-                      className={`p-1.5 rounded-lg border ${
+                      className={`p-1.5 rounded-md border ${
                         isSelected
-                          ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
-                          : 'bg-slate-800 text-slate-400 border-slate-700'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'theme-surface-subtle border theme-border theme-text-muted'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
-                    <span className="text-sm font-bold text-white">{mode.name}</span>
+                    <span className="text-xs sm:text-sm font-bold theme-text-primary">{mode.name}</span>
                   </div>
 
                   {isSelected ? (
-                    <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5" />
+                    <div className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                      <Check className="w-3 h-3" />
                     </div>
                   ) : (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded border theme-border theme-surface-subtle theme-text-muted font-medium">
                       {mode.badge}
                     </span>
                   )}
                 </div>
 
-                <p className="text-xs text-indigo-200/90 font-medium mb-1">{mode.tagline}</p>
-                <p className="text-[11px] text-slate-400 leading-relaxed">{mode.description}</p>
+                <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">{mode.tagline}</p>
+                <p className="text-[11px] theme-text-secondary leading-relaxed">{mode.description}</p>
               </div>
             </div>
           );

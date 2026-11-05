@@ -6,44 +6,46 @@ import {
   FlaskConical,
   Award,
   HelpCircle,
-  Sparkles,
 } from 'lucide-react';
+import { ThemeSelector } from '../common/ThemeSelector.jsx';
 
 export function Navbar({ activeTab, onNavigate, onOpenGlossary }) {
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Compass },
-    { id: 'fundamentals', label: 'Fundamentals', icon: BookOpen },
-    { id: 'scenarios', label: 'Scenarios', icon: Layers },
-    { id: 'experiment', label: 'Workspace', icon: FlaskConical },
-    { id: 'quiz', label: 'Quiz', icon: Award },
+    { id: 'dashboard', label: 'Overview', icon: Compass },
+    { id: 'fundamentals', label: 'Theory Notes', icon: BookOpen },
+    { id: 'scenarios', label: 'Lab Scenarios', icon: Layers },
+    { id: 'experiment', label: 'Workbench', icon: FlaskConical },
+    { id: 'quiz', label: 'Knowledge Check', icon: Award },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b theme-border theme-surface backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
+        {/* Institutional / Academic Brand Header */}
         <button
           onClick={() => onNavigate('dashboard')}
-          className="flex items-center gap-3 group text-left focus:outline-none"
+          className="flex items-center gap-3 text-left focus:outline-none group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 p-0.5 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <FlaskConical className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
-            </div>
+          <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors">
+            <FlaskConical className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-base tracking-tight">Hypothesis Lab</span>
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                v1.0
+              <span className="font-bold text-base tracking-tight theme-text-primary">
+                Hypothesis Lab
+              </span>
+              <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold">
+                CS-ML1
               </span>
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">Concept Learning & Hypothesis Explorer</p>
+            <p className="text-[11px] theme-text-muted hidden sm:block">
+              Interactive Concept Learning & Version Space Explorer
+            </p>
           </div>
         </button>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        {/* Clean Center Navigation Tabs */}
+        <nav className="flex items-center gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id || (item.id === 'scenarios' && activeTab === 'scenario-detail');
@@ -51,27 +53,29 @@ export function Navbar({ activeTab, onNavigate, onOpenGlossary }) {
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 shadow-sm shadow-indigo-500/10'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
+                    ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/80 shadow-sm'
+                    : 'theme-text-secondary hover:theme-surface-subtle border border-transparent'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'theme-text-muted'}`} />
                 <span className="hidden md:inline">{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Quick Utilities: Glossary & Status */}
-        <div className="flex items-center gap-2.5">
+        {/* Right Tooling: Theme Toggle & Glossary */}
+        <div className="flex items-center gap-2">
+          <ThemeSelector />
+
           <button
             onClick={onOpenGlossary}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 border border-slate-700 text-xs font-medium transition-colors"
-            title="Open Concept Learning Glossary"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border theme-border hover:theme-surface-subtle theme-text-secondary text-xs font-medium transition-colors"
+            title="Open Terminology Glossary"
           >
-            <HelpCircle className="w-4 h-4 text-indigo-400" />
+            <HelpCircle className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
             <span className="hidden sm:inline">Glossary</span>
           </button>
         </div>

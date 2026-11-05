@@ -97,3 +97,4 @@ export function predictInstance(instance, attrNames, consistentHypotheses) {
     details,
   };
 }
+
